@@ -15,25 +15,26 @@ public class Leeficheros {
     FileReader Fr = null;
     BufferedReader br = null;
     try {
-      archivo = new File(ruta); // Ruta desde donde se lee el txt
+      archivo = new File(ruta);
       Fr = new FileReader(archivo.toString());
       br = new BufferedReader(Fr);
       String linea;
       String delimiter =
-          ":"; // Separador dentro del txt. Cuando crees tu archivo de texto en la maquina separa
-               // los números por comas. No los pongas en linea recta, pon uno sobre otro
+          ":";
       int edad;
       String nombre;
+
+      String desconocida = "Desconocida";
       String ciudad;
-      Optional<Integer> optedad=Optional.empty();
-      Optional<String>  optnombre;
-      Optional<String>  optciudad;
+      Optional<Integer> optedad = Optional.empty();
+      Optional<String> optnombre;
+      Optional<String> optciudad;
 
       while (((linea = br.readLine()) != null)) {
 
         String a[] = linea.split(delimiter);
 
-       /* try {
+        /* try {
           if (a[0].isEmpty()) {
             nombre = " ";
           } else {
@@ -42,7 +43,7 @@ public class Leeficheros {
         } catch (IndexOutOfBoundsException e) {
           nombre = " ";
         } */
-        optnombre= Optional.of(a[0]);
+        optnombre = Optional.of(a[0]);
         /*try {
           if (a[1].isEmpty()) {
             ciudad = "Desconocida";
@@ -52,16 +53,15 @@ public class Leeficheros {
         } catch (IndexOutOfBoundsException e) {
           ciudad = "Desconocida";
         }*/
-        optciudad= Optional.of(a[1]);
-     
+        optciudad = Optional.of(a[1]);
+
         try {
           /*if (a[2].isEmpty()) {
             edad = Integer.parseInt("0");
           } else {
             edad = Integer.parseInt(a[2]);
           }*/
-          optedad= Optional.of(Integer.valueOf(a[2]));
-
+          optedad = Optional.of(Integer.valueOf(a[2]));
 
         } catch (IndexOutOfBoundsException e) {
           edad = Integer.parseInt("0");
