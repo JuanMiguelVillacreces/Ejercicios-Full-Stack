@@ -33,7 +33,7 @@ public class Leeficheros {
       while (((linea = br.readLine()) != null)) {
 
         String a[] = linea.split(delimiter);
-
+        Persona p = new Persona();
         /* try {
           if (a[0].isEmpty()) {
             nombre = " ";
@@ -44,6 +44,7 @@ public class Leeficheros {
           nombre = " ";
         } */
         optnombre = Optional.of(a[0]);
+        p.setNombre(a[0]);
         /*try {
           if (a[1].isEmpty()) {
             ciudad = "Desconocida";
@@ -54,6 +55,13 @@ public class Leeficheros {
           ciudad = "Desconocida";
         }*/
         optciudad = Optional.of(a[1]);
+        p.setCiudad(a[1]);
+        lista.stream()
+            .filter(persona -> persona.getCiudad() == "")
+            .forEach(
+                (pe) -> {
+                  pe.setCiudad("Desconocida");
+                });
 
         try {
           /*if (a[2].isEmpty()) {
@@ -62,11 +70,12 @@ public class Leeficheros {
             edad = Integer.parseInt(a[2]);
           }*/
           optedad = Optional.of(Integer.valueOf(a[2]));
-
+          p.setEdad(Integer.parseInt(a[2]));
         } catch (IndexOutOfBoundsException e) {
-          edad = Integer.parseInt("0");
+          p.setEdad(Integer.parseInt("0"));
+
         }
-        Persona p = new Persona(optnombre.get(), optciudad.get(), optedad.get());
+       //optnombre.get(), optciudad.get(), optedad.get()
         lista.add(p);
       }
 
