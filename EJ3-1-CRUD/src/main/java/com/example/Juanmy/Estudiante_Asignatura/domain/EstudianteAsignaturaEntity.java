@@ -1,0 +1,54 @@
+package com.example.Juanmy.Estudiante_Asignatura.domain;
+
+import com.example.Juanmy.Estudiante_Asignatura.infraestructure.controller.dto.imput.EstudianteAsignaturaImputDTO;
+import com.example.Juanmy.Student.domain.StudentEntity;
+import com.example.Juanmy.configuration.StringPrefixedSequenceIdGenerator;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+
+import javax.persistence.*;
+import java.util.Date;
+import java.util.List;
+
+@Data
+@Entity
+@NoArgsConstructor
+public class EstudianteAsignaturaEntity {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "asignatura_seq")
+  @GenericGenerator(
+      name = "asignatura_seq",
+      strategy = "com.example.Juanmy.configuration.StringPrefixedSequenceIdGenerator",
+      parameters = {
+        @Parameter(name = StringPrefixedSequenceIdGenerator.INCREMENT_PARAM, value = "1"),
+        @Parameter(name = StringPrefixedSequenceIdGenerator.VALUE_PREFIX_PARAMETER, value = "ASG_"),
+        @Parameter(name = StringPrefixedSequenceIdGenerator.NUMBER_FORMAT_PARAMETER, value = "%05d")
+      })
+  @Column(name = "id")
+  String idAsigntura;
+
+  @ManyToMany(mappedBy = "asignaturas", cascade = CascadeType.PERSIST)
+  List<StudentEntity> estudiantes;
+
+  String asignatura;
+  String comments;
+  @NonNull
+  Date initialDate;
+
+  Date finishDate;
+
+
+
+  public EstudianteAsignaturaEntity(EstudianteAsignaturaImputDTO estudianteAsignaturaImputDTO) {
+    if (estudianteAsignaturaImputDTO == null) return;
+    setAsignatura(estudianteAsignaturaImputDTO.getAsignatura());
+    setComments(estudianteAsignaturaImputDTO.getComments());
+    setInitialDate(estudianteAsignaturaImputDTO.getInitialDate());
+    setFinishDate(estudianteAsignaturaImputDTO.getFinishDate());
+
+  }
+}
