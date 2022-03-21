@@ -1,0 +1,73 @@
+let operacion: string = "";
+let pantalla: HTMLElement;
+let max: number = 16;
+let operator: boolean = true;
+let operacionTerminada: boolean = false;
+let coma: boolean = false;
+let operaciones: string[] = ["+", "-", "*", "/"];
+let numeros: string[] = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
+
+if (typeof window !== "undefined") {
+    window.onload = () =>{
+        const botones = document.querySelectorAll(".boton");
+        pantalla = document.getElementById("pantalla") as HTMLElement;
+        botones.forEach(boton => {
+            boton.addEventListener('click',handleBoton);
+        });
+    };
+}
+
+
+
+const handleBoton = (e : any) =>{
+    if(operacion.length<max){
+        let digit: string = e.target.innerText;
+        if(digit == "C"){
+            borrar();
+        }else if(digit == "="){
+            pantalla.innerHTML = resultado();
+            operacion = "";
+        }else if(digit == "exp" && operator == false){
+            operacion = operacion + "**";
+            pantalla.innerHTML = operacion;
+            operator = true;
+        }else if(digit == "0" && (pantalla.innerHTML == "0" || operacionTerminada) ){
+        }else if((digit == operaciones[0] || digit == operaciones[1] || digit == operaciones[2] || digit == operaciones[3]) && operator == false){
+            operacion = operacion + digit;
+            pantalla.innerHTML = operacion;
+            operator = true;
+            coma = false;  
+        }else if(digit == numeros[0] || digit == numeros[1] || digit == numeros[2] || digit == numeros[3] || digit == numeros[4] || digit == numeros[5] || digit == numeros[6] || digit == numeros[7] || digit == numeros[8]){
+            operacion = operacion + digit;
+            pantalla.innerHTML = operacion;
+            operator = false;
+        }else if(digit == "." && coma == false){
+            operacion = operacion + digit;
+            pantalla.innerHTML = operacion;
+            operator = true;
+            coma = true;
+        }else if(digit == ")" || digit == "("){
+            operacion = operacion + digit;
+            pantalla.innerHTML = operacion;
+        }
+    }else{
+        pantalla.innerHTML = resultado();
+        operacion = "";
+        alert("Tamaño máximo superado, se ha devuelto el resultado de la operación")
+    }
+}
+
+function borrar(){
+    operacion = "";
+    operator = true;
+    coma = false;
+    pantalla.innerHTML = "0";
+}
+
+function resultado(): string{
+    operator = true;
+    operacionTerminada = true;
+    coma = false;
+    return eval(operacion);
+}
+
