@@ -7,6 +7,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
+
+import com.example.Fichero.domain.FileInfo;
+import com.example.Fichero.infraestructure.repository.FicheroRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -16,10 +20,20 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class FicheroImp implements IFichero {
 
-    private final Path root = Paths.get("uploads");
-    public void init() {
+   Path root;
+
+
+    @Autowired
+    FicheroRepo ficheroRepo;
+
+    public void getroot(Path raiz){
+        root=raiz;
+    }
+
+    public void init(Path root) {
         try {
             Files.createDirectory(root);
+            getroot(root);
         } catch (IOException e) {
             throw new RuntimeException("Could not initialize folder for upload!");
         }
@@ -59,5 +73,10 @@ public class FicheroImp implements IFichero {
         }
     }
 
+    @Override
+    public FileInfo add(FileInfo f){
+        ficheroRepo.save(f);
+        return f;
+    }
 
 }

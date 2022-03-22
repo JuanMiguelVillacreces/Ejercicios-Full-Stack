@@ -9,6 +9,8 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.annotation.Resource;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @SpringBootApplication
 public class Ej2CrudValidacionApplication implements CommandLineRunner {
@@ -17,11 +19,20 @@ public class Ej2CrudValidacionApplication implements CommandLineRunner {
 	IFichero storageService;
 	public static void main(String[] args) {
 		SpringApplication.run(Ej2CrudValidacionApplication.class, args);
+
+
+
 	}
 	@Override
 	public void run(String... arg) throws Exception {
 		storageService.deleteAll();
-		storageService.init();
+
+		if(arg.length==0){
+			final Path root = Paths.get("uploads");
+			storageService.init(root);
+		}
+		storageService.init(Path.of(arg[0]));
+
 	}
 	@Bean
 	public WebMvcConfigurer corsConfigurer() {

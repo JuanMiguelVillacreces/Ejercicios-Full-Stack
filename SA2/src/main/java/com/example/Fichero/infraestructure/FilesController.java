@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class FilesController {
@@ -36,16 +37,41 @@ public class FilesController {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
         }
     }
+
+    @PostMapping("/upload/{tipo}")
+    public ResponseEntity<ResponseMessage> uploadFileTipo(@RequestParam("file") MultipartFile file, @PathVariable String tipo, RedirectAttributes redirectAttributes) {
+        String message = "";
+        String extension = (file.getOriginalFilename().contains(".")) ? file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1) : "";
+        if(extension.equalsIgnoreCase(tipo)){
+            storageService.save(file);
+            redirectAttributes.addFlashAttribute("message", "Uploaded the file successfully " + file.getOriginalFilename() + "!");
+            message = "Uploaded the file successfully: " + file.getOriginalFilename();
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
+        }else{
+            message = "NO se puede subir esa extension: " + file.getOriginalFilename() + "!";
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
+        }
+
+
+    }
+
     @GetMapping("/files")
     public ResponseEntity<List<FileInfo>> getListFiles() {
         List<FileInfo> fileInfos = storageService.loadAll().map(path -> {
             String filename = path.getFileName().toString();
             String url = MvcUriComponentsBuilder
                     .fromMethodName(FilesController.class, "getFile", path.getFileName().toString()).build().toString();
-            return new FileInfo(filename, url);
+            String ext = (filename.contains(".")) ? filename.substring(filename.lastIndexOf(".") + 1) : "";
+            FileInfo f= new FileInfo(filename,url,ext);
+                    return storageService.add(f);
+           // return new FileInfo(filename, url);
         }).collect(Collectors.toList());
+
         return ResponseEntity.status(HttpStatus.OK).body(fileInfos);
     }
+
+
+
     @GetMapping("/files/{filename:.+}")
     @ResponseBody
     public ResponseEntity<Resource> getFile(@PathVariable String filename) {
